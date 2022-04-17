@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+SGBenefic.API/SGBenefic.API.csproj
+.gitignore
+.vs/SGBenefic/v16/.suo
