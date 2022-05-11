@@ -1,0 +1,43 @@
+services:
+  # db:
+  #   image: mcr.microsoft.com/mssql/server:2019-latest
+  #   ports:
+  #     - "1433:1433"
+  #   environment:
+  #     SA_PASSWORD: qUgeyvYnOKyMy9HRpGMauKlJdsyq1QdIJUtp8Hz6HarKKCIiVm7m3ITHsBFQSMkEcrGXQy4FNHFX6zKq5NTzysbE0EVJnh3HZwl6DkAloQu7GQ1NZVVNnYEFpkAcxdun
+  #     ACCEPT_EULA: "Y"
+  db:
+    image: "mysql:5.7"
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_PASSWORD=q1w2e3
+      - MYSQL_ROOT_PASSWORD=q1w2e3
+      # - MYSQL_ROOT_HOST=%
+      # - bind-address:0.0.0.0
+
+  sgbenefic-api:
+    image: sgbenefic-api
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./SGBenefic.API/Dockerfile
+    environment:
+      - ConnectionStrings__MySqlConnection=Server=localhost;Port=3306;Database=beneficitDb;User=root;Password=q1w2e3
+      # - Logging__LogLevel__Default=Information
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+  # phone-book-front-end:
+  #   image: phone-book-front-end
+  #   restart: unless-stopped
+  #   build:
+  #     context: .
+  #     dockerfile: ./front-end/Dockerfile
+  #     args:
+  #       VUE_APP_API_URL: http://localhost:8080
+  #   ports:
+  #     - "8081:80"
+  #   depends_on:
+  #     - phone-book-api

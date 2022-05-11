@@ -1,0 +1,41 @@
+version: "3.8"
+
+volumes:
+  sgbeneficdb:
+
+
+networks:
+  mysqlNET:
+  sgbeneficNET:
+
+
+services:
+  mysql:
+    image: "mysql:5.7"
+    container_name: "mysql"
+    ports:
+      - "3306:3306"
+    volumes:
+      - sgbeneficdb:/var/lib/mysql
+    networks:
+      - mysqlNET
+    environment:
+      - MYSQL_PASSWORD=q1w2e3
+      - MYSQL_ROOT_PASSWORD=q1w2e3
+      - MYSQL_ROOT_HOST=%
+      - bind-address:0.0.0.0
+
+  sgbenefic:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sgbenefic
+    networks:
+      - mysqlNET
+      - sgbeneficNET
+    ports:
+      - 5000:80
+    environment:
+      - DBHOST=mysql
+    depends_on:
+      - mysql
