@@ -1,4 +1,5 @@
 ﻿using SGBenefic.API.Models;
+using System.Collections.Generic;
 
 namespace SGBenefic.API.Data
 {
@@ -10,7 +11,7 @@ namespace SGBenefic.API.Data
         bool SaveChanges();
 
         //Benefícios
-        Beneficit[] GetAllBeneficit();
+        List<Beneficit> GetAllBeneficit();
         Beneficit GetAllBeneficitById(int id);
     }
 }

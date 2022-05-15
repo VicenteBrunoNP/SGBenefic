@@ -29,9 +29,20 @@ namespace SGBenefic.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get(string cpfCnpj = "", string codigoBeneficio = "")
         {
             var beneficities = _repo.GetAllBeneficit();
+
+            if (!string.IsNullOrEmpty(cpfCnpj))
+                beneficities = beneficities.FindAll(x =>
+                    x.CpfCnpj.ToLower().Replace(".", "").Replace("-", "").Replace("/", "") == cpfCnpj.ToLower().Replace(".", "").Replace("-", "").Replace("/", ""));
+
+            if (!string.IsNullOrEmpty(codigoBeneficio))
+                beneficities = beneficities.FindAll(x =>
+                    x.CodigoBeneficio == codigoBeneficio.ToString());
+
+            if (beneficities.Count == 0)
+                return Ok(_mapper.Map<IEnumerable<BeneficitDto>>(new List<Beneficit>()));
 
             return Ok(_mapper.Map<IEnumerable<BeneficitDto>>(beneficities));
         }
@@ -46,6 +57,23 @@ namespace SGBenefic.API.Controllers
             var beneficitDto = _mapper.Map<BeneficitDto>(beneficit);
 
             return Ok(beneficitDto);
+        }
+
+        [HttpGet("GetOnlyBeneficits")]
+        public IActionResult GetOnlyBeneficits()
+        {
+            var beneficities = _repo.GetAllBeneficit().Select(p => new { p.CodigoBeneficio, p.Beneficio }).Distinct().ToList();
+
+            var list = new List<Value>();
+            foreach (var item in beneficities)
+            {
+                list.Add(new Value { Id = item.CodigoBeneficio, Description =item.Beneficio });;
+            }
+
+            list.Add(new Value { Id = "", Description = " - " });
+            list.OrderBy(x => x.Description);           
+
+            return Ok(list);
         }
 
         [HttpPost]

@@ -20,8 +20,10 @@ import './plugins/chartist'
 import './plugins/vee-validate'
 import vuetify from './plugins/vuetify'
 import i18n from './i18n'
+import { VueMaskDirective } from 'v-mask'
 
 Vue.config.productionTip = false
+Vue.directive('mask', VueMaskDirective);
 
 new Vue({
   router,

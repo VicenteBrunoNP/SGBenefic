@@ -20,7 +20,8 @@
             <v-spacer></v-spacer> -->
             <v-dialog v-model="dialog" max-width="500px">
               <template v-slot:activator="{ on, attrs }">
-                <v-btn
+                <v-container style="padding-top: 3em">
+                  <!-- <v-btn
                   color="primary"
                   dark
                   class="mb-2"
@@ -28,7 +29,35 @@
                   v-on="on"
                 >
                   Novo Benefício
-                </v-btn>
+                </v-btn> -->
+                  <v-row>
+                    <v-col cols="5">
+                      <v-text-field
+                        class="purple-input"
+                        label="CPF/CNPJ"
+                        v-model="filter.cpfCnpj"
+                        v-mask="'##############'"
+                      />
+                    </v-col>
+                    <v-col cols="6">
+                      <v-select
+                        v-model="filter.selectBenefic"
+                        :items="selectBenefits"
+                        item-text="description"
+                        item-value="id"
+                        label="Benefício"
+                        persistent-hint
+                        return-object
+                        single-line
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="1" class="text-right">
+                      <v-btn color="success" @click="loadBenefits">
+                        Buscar
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-container>
               </template>
               <v-card>
                 <v-card-title>
@@ -40,13 +69,13 @@
                     <v-row>
                       <v-col cols="12">
                         <v-checkbox
-                          v-model="selected"
-                          label="Benefício Utilizado"
-                          value="Benefício Utilizado"
+                          v-model="editedItem.beneficioUtilizado"
+                          label="Benefício Utilizado?"
                         ></v-checkbox>
                       </v-col>
                       <v-col cols="12">
                         <v-textarea
+                          v-model="editedItem.comentario"
                           name="input-7-1"
                           label="Comentário"
                           value="Comentários"
@@ -93,7 +122,7 @@
           <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
         </template>
         <template v-slot:no-data>
-          <v-btn color="primary" @click="loadOrder"> Reset </v-btn>
+          <v-btn color="primary" @click="loadBenefits"> Reset </v-btn>
         </template>
       </v-data-table>
     </base-material-card>
@@ -115,23 +144,28 @@ export default {
         //   value: "name",
         // },
         { text: "Id", value: "id" },
-        { text: "CPF/CNPJ", value: "CPF_CNPJ" },
-        { text: "Razão Social", value: "RAZAO_SOCIAL" },
-        { text: "Nível", value: "NIVEL" },
-        { text: "Cód. Benefício", value: "CODIGO_BENEFICIO" },
-        { text: "Benefício", value: "BENEFICIO" },
-        { text: "Cód. Organização", value: "ORG_COD" },
-        { text: "Data Concessão", value: "DATA_CONCESSAO_BENEFICIO" },
-        { text: "Data Validade", value: "DATA_VALIDADE_BENEFICIO" },
+        { text: "CPF/CNPJ", value: "cpfCnpj" },
+        { text: "Razão Social", value: "razaoSocial" },
+        { text: "Nível", value: "nivel" },
+        { text: "Cód. Benefício", value: "codigoBeneficio" },
+        { text: "Benefício", value: "beneficio" },
+        { text: "Cód. Organização", value: "orgCod" },
+        { text: "Data Concessão", value: "dataConcessaoBeneficio" },
+        { text: "Data Validade", value: "dataValidadeBeneficio" },
         {
           text: "Data Utilização",
-          value: "DATA_UTILIZACAO_BENEFICIO",
+          value: "dataUtilizacaoBeneficio",
         },
-        { text: "Utilizado?", value: "BENEFICIO_UTILIZADO" },
-        { text: "Comentário", value: "COMENTARIO" },
+        { text: "Utilizado?", value: "beneficioUtilizado" },
+        { text: "Comentário", value: "comentario" },
         { text: "Ações", value: "actions", sortable: false },
       ],
       benefics: [],
+      filter: {
+        cpfCnpj: "",
+        selectBenefic: { id: "", description: "" },
+      },
+      selectBenefits: {},
       editedIndex: -1,
       editedItem: {
         name: "",
@@ -163,36 +197,51 @@ export default {
     },
   },
   methods: {
-    loadOrder() {
-      axios.get(`"http://localhost:5000/api/Beneficit"`).then((response) => {
-        let _benefics = [];
-        response.data.forEach(function (item) {
-          if (item.DATA_CONCESSAO_BENEFICIO)
-            item.DATA_CONCESSAO_BENEFICIO = moment(
-              item.DATA_CONCESSAO_BENEFICIO
-            ).format("DD/MM/YYYY");
+    loadBenefits() {
+      axios
+        .get(
+          `http://localhost:5000/api/Beneficit?cpfCnpj=${this.filter.cpfCnpj}&codigoBeneficio=${this.filter.selectBenefic.id}`
+        )
+        .then((response) => {
+          let _benefics = [];
+          response.data.forEach(function (item) {
+            if (item.dataConcessaoBeneficio)
+              item.dataConcessaoBeneficio = moment(
+                item.dataConcessaoBeneficio
+              ).format("DD/MM/YYYY");
 
-          if (item.DATA_UTILIZACAO_BENEFICIO)
-            item.DATA_UTILIZACAO_BENEFICIO = moment(
-              item.DATA_UTILIZACAO_BENEFICIO
-            ).format("DD/MM/YYYY");
+            if (item.dataUtilizacaoBeneficio)
+              item.dataUtilizacaoBeneficio = moment(
+                item.dataUtilizacaoBeneficio
+              ).format("DD/MM/YYYY");
 
-          if (item.DATA_VALIDADE_BENEFICIO)
-            item.DATA_VALIDADE_BENEFICIO = moment(
-              item.DATA_VALIDADE_BENEFICIO
-            ).format("DD/MM/YYYY");
+            if (item.dataValidadeBeneficio)
+              item.dataValidadeBeneficio = moment(
+                item.dataValidadeBeneficio
+              ).format("DD/MM/YYYY");
 
-          _benefics.push(item);
+            item.beneficioUtilizado =
+              item.beneficioUtilizado == 0 ? true : false;
+
+            _benefics.push(item);
+          });
+
+          this.benefics = _benefics;
         });
-
-        this.benefics = _benefics;
-      });
+    },
+    loadSelectBenefits() {
+      axios
+        .get("http://localhost:5000/api/Beneficit/GetOnlyBeneficits")
+        .then((response) => {
+          this.selectBenefits = response.data;
+        });
     },
 
     editItem(item) {
       this.editedIndex = this.benefics.indexOf(item);
       this.editedItem = Object.assign({}, item);
       this.dialog = true;
+      console.log("ITEM", item);
     },
 
     deleteItem(item) {
@@ -237,7 +286,8 @@ export default {
     },
   },
   created() {
-    this.loadOrder();
+    this.loadBenefits();
+    this.loadSelectBenefits();
   },
 };
 </script>
