@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SGBenefic.API.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SGBenefic.API.Data
@@ -29,16 +30,15 @@ namespace SGBenefic.API.Data
         {
             return _context.SaveChanges() > 0;
         }
-
-        public Beneficit[] GetAllBeneficit()
+        public List<Beneficit> GetAllBeneficit()
         {
             IQueryable<Beneficit> query = _context.Beneficities;
 
+            query = query.AsNoTracking();
 
-            query = query.AsNoTracking()
-                         .OrderBy(a => a.Beneficio);
+            query.OrderBy(a => a.Beneficio);
 
-            return query.ToArray();
+            return query.ToList();
         }
         public Beneficit GetAllBeneficitById(int id)
         {
