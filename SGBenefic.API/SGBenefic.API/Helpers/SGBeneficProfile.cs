@@ -9,6 +9,7 @@ namespace SGBenefic.API.Helpers
     {
         public SGBeneficProfile()
         {
+            CreateMap<User, UserDto>().ReverseMap();
             CreateMap<Beneficit, BeneficitDto>().ReverseMap();
         }
     }

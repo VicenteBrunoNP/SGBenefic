@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SGBenefic.API.Data;
+using SGBenefic.API.Data.Interfaces;
 using SGBenefic.API.Dtos;
 using SGBenefic.API.Models;
 using System;
@@ -17,11 +17,11 @@ namespace SGBenefic.API.Controllers
     [ApiController]
     public class BeneficitController : ControllerBase
     {
-        private readonly IRepository _repo;
+        private readonly IBeneficitRepository _repo;
         private readonly IMapper _mapper;
 
 
-        public BeneficitController(IRepository repo, 
+        public BeneficitController(IBeneficitRepository repo, 
                                IMapper mapper)
         {
             _mapper = mapper;
@@ -39,7 +39,7 @@ namespace SGBenefic.API.Controllers
 
             if (!string.IsNullOrEmpty(codigoBeneficio))
                 beneficities = beneficities.FindAll(x =>
-                    x.CodigoBeneficio == codigoBeneficio.ToString());
+                    x.CodigoBeneficio == codigoBeneficio);
 
             if (beneficities.Count == 0)
                 return Ok(_mapper.Map<IEnumerable<BeneficitDto>>(new List<Beneficit>()));
@@ -51,7 +51,7 @@ namespace SGBenefic.API.Controllers
         public IActionResult Get(int id)
         {
 
-            var beneficit = _repo.GetAllBeneficitById(id);
+            var beneficit = _repo.GetBeneficitById(id);
             if (beneficit == null) return BadRequest("Benefício não encontrado");
 
             var beneficitDto = _mapper.Map<BeneficitDto>(beneficit);
@@ -91,7 +91,7 @@ namespace SGBenefic.API.Controllers
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] BeneficitDto model)
         {
-            var beneficit = _repo.GetAllBeneficitById(id);
+            var beneficit = _repo.GetBeneficitById(id);
             if (beneficit == null) return BadRequest("Benefício não encontrado");
 
             _mapper.Map(model, beneficit);
@@ -106,7 +106,7 @@ namespace SGBenefic.API.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var beneficit = _repo.GetAllBeneficitById(id);
+            var beneficit = _repo.GetBeneficitById(id);
             if (beneficit == null) return BadRequest("Benefício não encontrado");
 
             _repo.Delete(beneficit);
