@@ -2,8 +2,6 @@
 using SGBenefic.API.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SGBenefic.API.Data
 {
@@ -14,9 +12,22 @@ namespace SGBenefic.API.Data
         }
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
         public DbSet<Beneficit> Beneficities { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            builder.Entity<User>()
+                .HasData(new List<User>(){
+                    new User(1,"Usuário 1","usuario1@hotmail.com","12345","admin"),
+                    new User(2,"Usuário 2","usuario2@hotmail.com","12345","supervisor"),
+                    new User(3,"Usuário 3","usuario3@hotmail.com","12345","operador"),
+                    new User(4,"Usuário 4","usuario4@hotmail.com","12345","operador")
+                });
+
             builder.Entity<Beneficit>()
                 .HasData(new List<Beneficit>(){
                     new Beneficit(1,"71.096.708/0001-36","Martin e Emily Comercio de Bebidas ME","1","1","Benefício 1","1",DateTime.Now.AddDays(-1),0),

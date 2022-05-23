@@ -89,9 +89,11 @@
                 <v-card-actions>
                   <v-spacer></v-spacer>
                   <v-btn color="blue darken-1" text @click="close">
-                    Cancel
+                    Cancelar
                   </v-btn>
-                  <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
+                  <v-btn color="blue darken-1" text @click="save">
+                    Salvar
+                  </v-btn>
                 </v-card-actions>
               </v-card>
             </v-dialog>
@@ -169,17 +171,9 @@ export default {
       editedIndex: -1,
       editedItem: {
         name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
       },
       defaultItem: {
         name: "",
-        calories: 0,
-        fat: 0,
-        carbs: 0,
-        protein: 0,
       },
     };
   },

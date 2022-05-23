@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using SGBenefic.API.Data;
+using SGBenefic.API.Data.Interfaces;
 using System;
 
 namespace SGBenefic.API
@@ -41,6 +42,8 @@ namespace SGBenefic.API
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IRepository, Repository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IBeneficitRepository, BeneficitRepository>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SGBenefic.API", Version = "v1" });
