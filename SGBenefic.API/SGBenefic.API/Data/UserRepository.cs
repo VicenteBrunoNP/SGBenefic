@@ -49,6 +49,16 @@ namespace SGBenefic.API.Data
 
             return query.FirstOrDefault();
         }
+        public User GetUserPerEmail(string email)
+        {
+            IQueryable<User> query = _context.Users;
+
+            query = query.AsNoTracking()
+                         .OrderBy(a => a.Name)
+                         .Where(a => a.Email.ToLower().Trim() == email.ToLower().Trim());
+
+            return query.FirstOrDefault();
+        }
 
     }
 }

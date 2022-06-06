@@ -6,6 +6,7 @@ namespace SGBenefic.API.Data.Interfaces
     {
         List<Models.User> GetAllUser();
         Models.User GetUserById(int id);
+        Models.User GetUserPerEmail(string email);
     }
 
 }

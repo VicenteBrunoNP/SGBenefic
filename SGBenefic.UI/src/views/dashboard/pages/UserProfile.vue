@@ -222,8 +222,8 @@ import axios from "axios";
 export default {
   data() {
     return {
-      nome: "Nome",
-      email: "email@email.com",
+      nome: "",
+      email: "",
       password: "",
       role: "Operador",
       roles: ["Operador", "Supervisor", "Administrador"],
@@ -325,6 +325,10 @@ export default {
       }
       this.close();
     },
+  },
+  beforeMount() {
+    this.nome = this.$store.state.usuario.name;
+    this.email = this.$store.state.usuario.email;
   },
   created() {
     this.loadUsers();

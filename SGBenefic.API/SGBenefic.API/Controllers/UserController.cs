@@ -56,6 +56,18 @@ namespace SGBenefic.API.Controllers
             return Ok(userDto);
         }
 
+        [HttpGet("GetUserPerEmail/{email}")]
+        public IActionResult GetUserPerEmail(string email)
+        {
+
+            var user = _repo.GetUserPerEmail(email);
+            if (user == null) return BadRequest("Usuário não encontrado");
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Ok(userDto);
+        }
+
         [HttpPost]
         public IActionResult Post([FromBody] UserDto model)
         {

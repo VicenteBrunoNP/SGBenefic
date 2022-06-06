@@ -13,14 +13,14 @@ export default new Router({
       children: [
         // Pages
         {
+          name: 'Login',
+          path: 'login',
+          component: () => import('@/views/dashboard/Login'),
+        },
+        {
           name: 'Usuário',
           path: 'pages/user',
           component: () => import('@/views/dashboard/pages/UserProfile'),
-        },
-        {
-          name: 'Notifications',
-          path: 'components/notifications',
-          component: () => import('@/views/dashboard/component/Notifications'),
         },
         {
           name: 'Benefícios',

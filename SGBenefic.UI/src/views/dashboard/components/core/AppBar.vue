@@ -31,9 +31,31 @@
       </v-list>
     </v-menu>
 
-    <v-btn class="ml-2" min-width="0" text to="/pages/user">
-      <v-icon>mdi-account</v-icon>
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn class="ml-2" dark v-bind="attrs" v-on="on">
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title class="title">{{
+              $store.state.usuario.name
+            }}</v-list-item-title>
+            <v-list-item-subtitle>{{
+              $store.state.usuario.email
+            }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item link @click="logout">
+          <v-list-item-icon>
+            <v-icon>mdi-logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Sair</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
   </v-app-bar>
 </template>
 
@@ -84,15 +106,7 @@ export default {
     },
   },
 
-  data: () => ({
-    notifications: [
-      "Mike John Responded to your email",
-      "You have 5 new tasks",
-      "You're now friends with Andrew",
-      "Another Notification",
-      "Another one",
-    ],
-  }),
+  data: () => ({}),
 
   computed: {
     ...mapState(["drawer"]),
@@ -102,6 +116,10 @@ export default {
     ...mapMutations({
       setDrawer: "SET_DRAWER",
     }),
+    logout() {
+      this.$store.state.login = false;
+      this.$router.push("/login");
+    },
   },
 };
 </script>

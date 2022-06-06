@@ -1,8 +1,9 @@
 <template>
   <v-app>
-    <dashboard-core-app-bar />
-
-    <dashboard-core-drawer />
+    <div v-if="$store.state.login">
+      <dashboard-core-app-bar />
+      <dashboard-core-drawer />
+    </div>
 
     <dashboard-core-view />
 
@@ -24,5 +25,16 @@ export default {
   data: () => ({
     expandOnHover: false,
   }),
+  methods: {
+    VerifyLogin() {
+      if (!this.$store.state.login) {
+        console.log("NÃO LOGADO");
+        this.$router.push("/login");
+      }
+    },
+  },
+  beforeMount() {
+    this.VerifyLogin();
+  },
 };
 </script>
